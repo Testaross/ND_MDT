@@ -30,12 +30,14 @@ RegisterNetEvent("ND_MDT:setUnitStatus", function(unitStatus, statusCode)
 
     if statusCode == "10-7" then
         activeUnits[src] = nil
+        Player(src).state.InService = false
     else
         activeUnits[src] = {
             status = unitStatus,
             department = player.jobLabel,
             unit = ("%s %s [%s]"):format(player.firstName, player.lastName, player.callsign)
         }
+        Player(source).state.InService = true
     end
 
     TriggerClientEvent("ND_MDT:updateUnitStatus", -1, activeUnits)
@@ -61,6 +63,7 @@ AddEventHandler("playerDropped", function()
     if not activeUnits[src] then return end
     activeUnits[src] = nil
     TriggerClientEvent("ND_MDT:updateUnitStatus", -1, activeUnits)
+    Player(src).state.InService = false
 end)
 
 -- This will just send all the current calls to the client.
